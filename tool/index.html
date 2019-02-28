@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hello World!</title>
+
+  <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+</head>
+
+<body>
+
+  <div class="container-fluid">
+
+    <div class="form-group border p-2">
+
+      <div class="row">
+        <div class="col">
+          <label> - network config - </label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4">
+          <label for="ipaddress"> ip</label>
+          <input type="text" class="form-control" id="ipaddress" value="192.168.0.">
+        </div>
+        <div class="col-4">
+          <label for="portnum"> port</label>
+          <input type="text" class="form-control" id="portnum" value="2012">
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-4">
+          <button class="btn btn-primary btn-test my-1" id="btnNetworkSave"> save </button>
+          <button class="btn btn-secondary btn-test my-1" id="btnNetworkLoad"> load </button>
+          <button class="btn btn-secondary btn-test my-1" id="btnNetworkReBind"> re bind </button>
+        </div>
+
+
+      </div>
+
+    </div>
+
+    <div class="form-group p-2 border">
+
+      <textarea style="height : 200px;" class="form-control" id="textAreaCode"> </textarea>
+      <button class="btn btn-primary btn-block btn-test my-1" id="btnCodeRun"> Run </button>
+
+      <form class="form-inline">
+        <input class="form-control" id="inputFileName" placeholder=".lua">
+        <button class="btn btn-primary mb-2 mx-3">Load</button>
+        <button class="btn btn-danger mb-2 mx-3">Save</button>
+      </form>
+
+    </div>
+
+
+    <li class="list-group" id="log-text"></li>
+
+
+  </div>
+
+
+
+  <script src="index.js">
+  // You can also require other files to run in this process
+  //require('./index.js')
+
+  </script>
+</body>
+
+</html>
