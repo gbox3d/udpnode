@@ -10,14 +10,16 @@ gpio.mode(4,gpio.OUTPUT) --상태표시용 ,내장 led
 gpio.write(4,0)
 
 
-local _loop = function ()
-    gpio.write(3,1) gpio.write(4,0) tmr.create():alarm(500,tmr.ALARM_SINGLE,function() gpio.write(4,1) gpio.write(3,0) end)
-    
-end
-
 local __doit = function()
-    
-    tmr.create():alarm(3000,tmr.ALARM_AUTO,_loop)
+
+    local _loop
+
+    _loop = function()
+        --루프코드
+        tmr.create():alarm(1000,tmr.ALARM_SINGLE,_loop)
+    end
+
+    _loop()
 
     gpio.write(4,1)
     gpio.write(3,1)

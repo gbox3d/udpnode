@@ -120,10 +120,10 @@ code : "startUdpCast()"
 }
 ```
 echo 패킷추가
-```js
+```
 {
 cmd:"eval",
-code : "packet_dic[\"echo\"] = function(packet) local rt = {type=\"rs\",result=\"echo\",msg=packet.msg} udp_server:send(cjson.encode(rt))  end"
+code : "packet_dic[\"echo\"] = function(packet) local rt = {type=\"rs\",result=\"echo\",msg=packet.msg} udp_server:send(sjson.encode(rt))  end"
 }
 
 ```
