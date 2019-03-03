@@ -1,0 +1,50 @@
+<head>
+  <title>tool</title>
+</head>
+
+<body>
+
+{{>index}}
+
+</body>
+
+<template name="index">
+
+  <button name="test-1" > test 1 </button>
+  <button name="test-2" > test 2 </button>
+
+
+  <ul>
+    {{#each deviceList}}
+      <li>
+        <div> {{ip}}</div>
+      </li>
+    {{/each}}
+  </ul>
+
+
+
+
+  <div name="connection-info">
+    ip : <input name="ip" value="192.168.0.99">
+  </div>
+
+
+  <div name="file-ui">
+    <div>
+      <textarea name="code" style="width: 400px;height: 300px;">{{dataRecv.buf}}</textarea>
+    </div>
+
+    <div>
+      <input name="filename" value="config.json">
+    </div>
+
+    <div>
+      <button name="load"> load </button>
+      <button name="save" > save </button>
+      <button name="list" > list </button>
+    </div>
+  </div>
+
+
+</template>
