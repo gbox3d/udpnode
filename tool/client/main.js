@@ -22,7 +22,6 @@ Template.index.onCreated(function helloOnCreated() {
         //서버쪽에서 추가하는 코드 : MsgLog.insert({text:'hello world'})
         console.log('observe add ' + id)
         console.log(fileds)
-
       },
       changed(id,fileds) {
 
@@ -37,12 +36,8 @@ Template.index.onCreated(function helloOnCreated() {
       removed(id) {
         //MsgLog.remove({})
         // console.log('observe remove ' + id)
-
-
       }
-
   })
-
 
 });
 
@@ -72,12 +67,35 @@ Template.index.events({
 
   },
   'click button[name="test-2"]'(event, instance) {
-    // Meteor.call("udp/remoteFile/write",{
-    //   ip: instance.find('[name="connection-info"] input[name="ip"]').value,
-    //   filename: '_config.json',
-    //   buff : instance.find('[name="file-ui"] textarea[name="code"]').value
-    // })
+
+    let _ip = instance.find('[name="connection-info"] input[name="ip"]').value
+    Meteor.call('udp/sendDataTo',
+      {
+        ip : "192.168.0.99",
+        pkt : {
+          cmd :"eval",
+          code : `print('hello') udp_safe_sender('ok', 2012,"${_ip}")`
+        }
+      }
+    )
+
   },
+  'click [name="command-line-tool"] button[name="run"]'(event, instance) {
+
+    let _ip = instance.find('[name="connection-info"] input[name="ip"]').value
+    let _cmd = instance.find('[name="command-line-tool"] input[name="code"]').value
+    Meteor.call('udp/sendDataTo',
+      {
+        ip : "192.168.0.99",
+        pkt : {
+          cmd :"eval",
+          code : `${_cmd} udp_safe_sender('ok', 2012,"${_ip}")`
+        }
+      }
+    )
+
+  },
+
   'click [name="file-ui"] button[name="load"]'(event,instance) {
     Meteor.call("udp/remoteFile/read",{
       ip: instance.find('[name="connection-info"] input[name="ip"]').value,
@@ -92,26 +110,3 @@ Template.index.events({
     })
   }
 });
-
-/*
-Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
-  this.counter = new ReactiveVar(0);
-
-  this.subscribe('udp/bcDetect')
-
-});
-
-Template.hello.helpers({
-  counter() {
-    return Template.instance().counter.get();
-  },
-});
-
-Template.hello.events({
-  'click button'(event, instance) {
-    // increment the counter when button is clicked
-    instance.counter.set(instance.counter.get() + 1);
-  },
-});
-*/

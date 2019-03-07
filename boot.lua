@@ -69,7 +69,7 @@ function system_start_up()
         --wifi.ap.config({ssid="esptest",pwd="123456789"})
         -- nil 을 주면 패스워드 설정안해도됨
         wifi.ap.config({ssid="BNESP"..chipid,pwd=nil})
-        wifi.ap.setip({ip="192.168.9.1",netmask="255.255.255.0",gateway="192.168.9.1"})
+        wifi.ap.setip({ip="192.168.0.1",netmask="255.255.255.0",gateway="192.168.0.1"})
         print("start ap mode")
 
         startup()
@@ -171,7 +171,7 @@ function system_start_up()
                 elseif evt == wifi.eventmon.STA_DISCONNECTED then
                     wifi.sta.disconnect()
                     setupAP()
-                    startUdpCast();
+                    --startUdpCast();
                     boot_status.process = 'APOK'
                     save_BootStatus(); end
             end)
@@ -183,7 +183,7 @@ end
 
 
 --------------------App -----------------
-app_version='0.0.5'
+app_version='0.0.6'
 app_status = {fsm=0}; -- manage runtime values & flags
 extraRecvCb = nil
 
@@ -196,10 +196,6 @@ function startup()
 
     master_socket = net.createUDPSocket()
 
-    local ip = app_config.ip;
-    local broad_ip = ip[1] .. ".".. ip[2].."." ..ip[3] .. ".255" 
-    
-    print("broad cast : " .. broad_ip .. "," .. app_config.bc_port)
 
     udp_safe_sender = AsyncSender_Safe_udp({getsocket = function() return master_socket end})
     --udp_safe_sender = function(port,ip,data) master_socket:send(ip,port,data) end
@@ -240,8 +236,14 @@ function startup()
     master_socket:on("receive",processRecv)
     master_socket:listen(app_config.data_port)
 
+-- udp broad cast
+    local ip = app_config.ip;
+    local broad_ip = ip[1] .. ".".. ip[2].."." ..ip[3] .. ".255"
+
+    print("broad cast : " .. broad_ip .. "," .. app_config.bc_port)
+
     startUdpCast = function()    
-        --tmr.alarm(timerid_Udpcaster,app_config.cast_delay,tmr.ALARM_AUTO,
+
         print("cast delay :" .. app_config.cast_delay)
         timerid_Udpcaster:alarm(app_config.cast_delay,tmr.ALARM_AUTO,
             function()
@@ -258,7 +260,7 @@ function startup()
     end
 
     stopUdpCast = function() timerid_Udpcaster:stop() end
-    startUdpCast();    
+    startUdpCast();
 end
 
 --------------------------------------------------

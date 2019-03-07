@@ -10,10 +10,6 @@
 
 <template name="index">
 
-  <button name="test-1" > test 1 </button>
-  <button name="test-2" > test 2 </button>
-
-
   <ul>
     {{#each deviceList}}
       <li>
@@ -23,10 +19,15 @@
   </ul>
 
 
-
-
   <div name="connection-info">
     ip : <input name="ip" value="192.168.0.99">
+    port : <input name="port" value="2012">
+  </div>
+
+  <div name="command-line-tool">
+     <input name="code" value="print('hi~')">
+    <button name="run" >실행</button>
+
   </div>
 
 
@@ -45,6 +46,14 @@
       <button name="list" > list </button>
     </div>
   </div>
+
+
+  <div name="test-ui">
+    <button name="test-1" > test 1 </button>
+    <button name="test-2" > test 2 </button>
+
+  </div>
+
 
 
 </template>

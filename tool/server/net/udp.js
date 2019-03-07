@@ -33,7 +33,7 @@ Meteor.publish("udp/bcDetect", function() {
     //console.log(rinfo)
 
     let _pkt = JSON.parse(msg)
-    //console.log(_pkt)
+    // console.log( _pkt)
 
     let _address = rinfo.address.split('.')
 
@@ -43,7 +43,7 @@ Meteor.publish("udp/bcDetect", function() {
       cid : _pkt.cid
     }
 
-    console.log()
+    //console.log()
 
     this.changed('dc_bcDetect', _id,  deviceList)
 
@@ -66,11 +66,12 @@ Meteor.publish("udp/dataReciver", function() {
 
   dataConn.socket.on( "message", ( msg, rinfo )=> {
 
+    console.log('receive packet')
+    console.log(msg.toString())
+
     let _pkt = JSON.parse(msg)
 
     let _cb = dataReciverCallBack[_pkt.id]
-
-    // console.log(_id)
 
     if( typeof _cb === 'function' ) {
       _cb({
@@ -113,6 +114,7 @@ Meteor.methods({
         {
           let callback_id = Random.id()
           let _code = "do " +
+            `print('start read ${filename}')` +
             "local _r = file.open(\"" + filename + "\") " +
             "if _r then _r=1 else _r=0 end " +
             "local rt={ r=_r, " +
