@@ -5,6 +5,7 @@
   "main": "test.js",
   "scripts": {
     "tool": "npx electron ./tool",
+
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

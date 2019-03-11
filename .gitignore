@@ -44,3 +44,4 @@ luac.out
 /node_modules
 package-lock.json
 .DS_Store
+/output
