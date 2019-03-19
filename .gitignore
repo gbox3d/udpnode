@@ -46,3 +46,4 @@ package-lock.json
 .DS_Store
 /output
 .nodemcutool
+/_temp
