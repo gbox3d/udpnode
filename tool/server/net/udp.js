@@ -1,3 +1,5 @@
+import '../../lib/collections'
+
 var dgram = require( "dgram" );
 var ipHepler = require('ip');
 
@@ -17,74 +19,138 @@ let dataConn = {
 bcConn.socket.bind( {port : bcConn.port });
 dataConn.socket.bind( {port : dataConn.port });
 
-
-Meteor.publish("udp/bcDetect", function() {
-
-  console.log("publish udp/bcDetect")
-
-  let deviceList = {}
-
-  let _id = Random.id()
-  this.added('dc_bcDetect', _id,  deviceList)
-
-  bcConn.socket.removeAllListeners("message")
-
-  bcConn.socket.on( "message", ( msg, rinfo )=> {
-    //console.log(rinfo)
+bcConn.socket.on( "message", Meteor.bindEnvironment(( msg, rinfo )=> {
 
     let _pkt = JSON.parse(msg)
-    // console.log( _pkt)
+    let _address =  rinfo.address
+    let _currentTick = (new Date()).getTime()
+    // console.log()
 
-    let _address = rinfo.address.split('.')
+    if( dc_bcDetect.find({address:_address}).count() > 0) {
 
-    deviceList[_address[0]+_address[1]+_address[2]+_address[3]] = {
-      ip : rinfo.address,
-      timeStep: new Date(),
-      cid : _pkt.cid
+      dc_bcDetect.update({address:_address},
+        {$set:{
+            pkt : _pkt,
+            at : _currentTick
+          }})
+
     }
-
-    //console.log()
-
-    this.changed('dc_bcDetect', _id,  deviceList)
-
+    else {
+      dc_bcDetect.insert({
+        pkt : _pkt,
+        address : _address,
+        at : _currentTick
+      })
+    }
   })
-
-  this.ready()
-
-});
-
+)
 
 let dataReciverCallBack = {}
-Meteor.publish("udp/dataReciver", function() {
-
-  let _id = Random.id()
-  this.added('dataReciver', _id,  {})
-
-  console.log("publish udp/dataReciver add id " + _id)
-
-  dataConn.socket.removeAllListeners("message")
-
-  dataConn.socket.on( "message", ( msg, rinfo )=> {
+dataConn.socket.on( "message",  Meteor.bindEnvironment(( msg, rinfo )=> {
 
     console.log('receive packet')
     console.log(msg.toString())
-
     let _pkt = JSON.parse(msg)
+
+    dataReciver.insert({
+      type:'none',
+      address : rinfo.address,
+      data : msg.toString(),
+      at : new Date()
+    })
+
+
+
 
     let _cb = dataReciverCallBack[_pkt.id]
 
     if( typeof _cb === 'function' ) {
       _cb({
-        packet : _pkt,
-        collection_id : _id,
-        publishObj : this
+        packet : _pkt
       })
     }
 
 
   })
+)
 
-  this.ready()
+
+
+Meteor.publish("udp/bcDetect", function() {
+
+  return dc_bcDetect.find({'pkt.type' : 'bc'} )
+
+  // console.log("publish udp/bcDetect")
+  //
+  // let deviceList = {}
+  //
+  // let _id = Random.id()
+  // this.added('dc_bcDetect', _id,  deviceList)
+  //
+  // bcConn.socket.removeAllListeners("message")
+  //
+  // bcConn.socket.on( "message", ( msg, rinfo )=> {
+  //   //console.log(rinfo)
+  //
+  //   let _pkt = JSON.parse(msg)
+  //   //console.log( _pkt)
+  //
+  //   let _address = rinfo.address
+  //   // let _address = rinfo.address.split('.')
+  //   //
+  //   // deviceList[_address[0]+_address[1]+_address[2]+_address[3]] = {
+  //   //   ip : rinfo.address,
+  //   //   timeStep: new Date(),
+  //   //   cid : _pkt.cid
+  //   // }
+  //   //
+  //   // // console.log(deviceList)
+  //
+  //   this.changed('dc_bcDetect', _id,  {
+  //     address : _address,
+  //     pkt : _pkt,
+  //     at : (new Date()).getTime()
+  //   })
+  //
+  // })
+  //
+  // this.ready()
+
+});
+
+
+// let dataReciverCallBack = {}
+Meteor.publish("udp/dataReciver", function() {
+  return dataReciver.find({})
+
+  // let _id = Random.id()
+  // this.added('dataReciver', _id,  {})
+  //
+  // console.log("publish udp/dataReciver add id " + _id)
+  //
+  // dataConn.socket.removeAllListeners("message")
+  //
+  // dataConn.socket.on( "message", ( msg, rinfo )=> {
+  //
+  //   console.log('receive packet')
+  //   console.log(msg.toString())
+  //
+  //   let _pkt = JSON.parse(msg)
+  //
+  //   let _cb = dataReciverCallBack[_pkt.id]
+  //
+  //   if( typeof _cb === 'function' ) {
+  //     _cb({
+  //       packet : _pkt,
+  //       collection_id : _id,
+  //       publishObj : this
+  //     })
+  //   }
+  //
+  //
+  // })
+  //
+  // this.ready()
 
 })
 
@@ -104,6 +170,10 @@ Meteor.methods({
 
     let buffer = ""
 
+    //이전 데이터 지우기
+    dataReciver.remove({type:'loadok'})
+
+
     let _loop = ()=> {
 
       switch(_fsm) {
@@ -115,7 +185,7 @@ Meteor.methods({
           let callback_id = Random.id()
           let _code = "do " +
             `print('start read ${filename}')` +
-            "local _r = file.open(\"" + filename + "\") " +
+            `local _r = file.open('${filename}') ` +
             "if _r then _r=1 else _r=0 end " +
             "local rt={ r=_r, " +
             "id=\"" + callback_id +
@@ -127,7 +197,7 @@ Meteor.methods({
             ") " +
             "end"
 
-          // console.log(_code)
+          console.log(_code)
 
           let _pkt = {
             cmd :"eval",
@@ -216,20 +286,29 @@ Meteor.methods({
           }
           dataConn.socket.send(Buffer.from(JSON.stringify(_pkt)),dataConn.port,ip)
 
-          dataReciverCallBack[callback_id] = ({packet,publishObj,collection_id})=> {
+          dataReciverCallBack[callback_id] = ({packet})=> {
 
             //처리 후 지우기
             delete dataReciverCallBack[callback_id]
 
             // console.log('send to : ' + collection_id)
+            // publishObj.changed('dataReciver',collection_id,{
+            //   buf : buffer
+            // })
+            // console.log(buffer)
 
-            publishObj.changed('dataReciver',collection_id,{
-              buf : buffer
+            dataReciver.insert({
+              address : ip,
+              type:'loadok',
+              data : buffer,
+              at : new Date()
             })
 
             if(packet.r) {
               _next = false;
             }
+
+
 
           }
           _fsm = 100
@@ -268,6 +347,8 @@ Meteor.methods({
 
     let _startIndex = 0
     let _writeLength = 64
+
+    dataReciver.remove({type:'saveok'})
 
 
     let _loop = ()=> {
@@ -371,10 +452,14 @@ Meteor.methods({
             //처리 후 지우기
             delete dataReciverCallBack[callback_id]
 
-            publishObj.changed('dataReciver',collection_id,{
-              type : 'msg',
-              buf : 'save ok'
+            dataReciver.insert({
+              type:'saveok',
+              msg : 'ok'
             })
+            // publishObj.changed('dataReciver',collection_id,{
+            //   type : 'msg',
+            //   buf : 'save ok'
+            // })
 
             if(packet.r) {
               _next = false;
@@ -393,6 +478,10 @@ Meteor.methods({
         case 101:
           if((new Date()).getTime() - _startWaitTick > 3000 ) {
             console.log('time out')
+            dataReciver.insert({
+              type:'saveok',
+              msg : 'timeout'
+            })
             _next = false;
           }
           break;
@@ -409,7 +498,18 @@ Meteor.methods({
 
     return {err:false}
 
+  },
+  "db/clearAll"() {
+    dataReciver.remove({})
+    dc_bcDetect.remove({})
+  },
+  "etc/getReturnIp"() {
+    return {
+      err:false,
+      ip:ipHepler.address()
+    }
   }
+
 })
 
 

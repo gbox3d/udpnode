@@ -45,3 +45,4 @@ luac.out
 package-lock.json
 .DS_Store
 /output
+.nodemcutool

@@ -1,0 +1,2 @@
+
+(cd /home/pi/work/bundle && ./run_deploy.sh &)

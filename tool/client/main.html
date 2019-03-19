@@ -10,13 +10,19 @@
 
 <template name="index">
 
-  <ul>
-    {{#each deviceList}}
-      <li>
-        <div> {{ip}}</div>
-      </li>
-    {{/each}}
-  </ul>
+  <div> return address : {{getReturnIp}} </div>
+  <div name="broadcast-list">
+
+    <ul>
+      {{#each deviceList}}
+        <li>
+          <div> {{address}}</div>
+        </li>
+      {{/each}}
+    </ul>
+
+
+  </div>
 
 
   <div name="connection-info">
@@ -25,15 +31,26 @@
   </div>
 
   <div name="command-line-tool">
-     <input name="code" value="print('hi~')">
+    <input name="code" value="print('hi~')">
     <button name="run" >실행</button>
+
+  </div>
+
+  <div name="udpResponse" >
+    <ul>
+      {{#each dataRecv}}
+        <li>
+          <div> {{data}}</div>
+        </li>
+      {{/each}}
+    </ul>
 
   </div>
 
 
   <div name="file-ui">
     <div>
-      <textarea name="code" style="width: 400px;height: 300px;">{{dataRecv.buf}}</textarea>
+      <textarea name="code" style="width: 400px;height: 300px;">{{getLoadOk.data}}</textarea>
     </div>
 
     <div>
@@ -44,7 +61,12 @@
       <button name="load"> load </button>
       <button name="save" > save </button>
       <button name="list" > list </button>
+
     </div>
+  </div>
+
+  <div name="etc-ui">
+    <button name="reset-db" >디비 리셋</button>
   </div>
 
 
