@@ -1,2 +1,2 @@
 
-(cd /home/pi/work/bundle && ./run_deploy.sh &)
+(cd /home/pi/work/udpnode && ./run_deploy.sh &)

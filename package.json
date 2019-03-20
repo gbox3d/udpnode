@@ -2,10 +2,9 @@
   "name": "udpnode",
   "version": "1.0.0",
   "description": "nodemcu udp app",
-  "main": "test.js",
+  "main": "old_tool/test.js",
   "scripts": {
-    "tool": "npx electron ./tool",
-    "upload" : "npx nodemcu-tool upload init.lua boot.lua config.lua",
+    "upload" : "npx nodemcu-tool upload ./core/init.lua ./core/boot.lua ./core/config.lua",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
