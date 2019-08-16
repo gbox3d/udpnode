@@ -56,7 +56,7 @@ function save_BootStatus()
 end
 
 --------------------App -----------------
-app_version = "0.0.7"
+app_version = "0.0.8"
 app_status = {fsm = 0} -- manage runtime values & flags
 extraRecvCb = nil
 
@@ -315,7 +315,6 @@ end
 
 --------------------------------------------------
 
-
 if file.exists("status.json") then
     file.open("status.json", "r")
     local data = file.read()
@@ -327,6 +326,25 @@ if file.exists("status.json") then
     end
     --이전실행상태 검사
     if boot_status.process == "startup" or boot_status.process == "repair" then
+        --개발 모드가 아니라면 재부팅
+        file.open("config.json", "r")
+        local config_file = file.read()
+        file.close()
+        app_config = sjson.decode(config_file)
+
+        if app_config.devmode == false  then
+            print("reboot")
+            tmr.create():alarm(
+                5000,
+                tmr.ALARM_SINGLE,
+                function()
+                    node.restart()
+                end
+            )
+        else
+            print("dev mode")
+        end
+
         print("repair mode")
         gpio.write(0, 1)
         boot_status.process = "nook"

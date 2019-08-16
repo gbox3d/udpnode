@@ -1,3 +1,5 @@
+udpcaster = require("udpcaster")
+
 print("load plugin")
 --dofile("")
 gpio.mode(0,gpio.OUTPUT) --상태표시용 
@@ -7,7 +9,8 @@ gpio.mode(3,gpio.OUTPUT) --pwm , onoff 가능
 gpio.write(3,0)
 
 gpio.mode(4,gpio.OUTPUT) --상태표시용 ,내장 led 
-gpio.write(4,0)
+gpio.write(4,1)
+
 
 
 --i2c write 
@@ -33,34 +36,20 @@ local dataServer = {
     sendDelay = 5000
 }
 
-local __doit = function()
-    --i2c master mode setup
+function ext_main(delay)
+    print("extention main start")
+
     print("i2c setup...")
+
     local id, sda, scl = 0, 1, 2
     i2c.setup(id, sda, scl, i2c.SLOW)
-    
-    gpio.write(3,1) --red led off
-    gpio.write(4,1) -- blue led off
+    gpio.write(4,0) -- status led on
+
+    udpcaster.start(app_config)
     
     print("i2c setup ok")
 end
 
-function ext_main(delay)
-    print("extention main start")
-    
-    tmr.create():alarm(
-        delay,
-        tmr.ALARM_SINGLE,
-        function()
-            local __ps = boot_status.process
-            boot_status.process = "stub_check"
-            save_BootStatus()
-            __doit()
-            boot_status.process = __ps
-            save_BootStatus()
 
-            print("stop udp broudcast")
-            stopUdpCast();
-        end
-    )
-end
+--sendData(0,27,{2,1,4}) 13 포트 켜기
+
