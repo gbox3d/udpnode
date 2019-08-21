@@ -20,7 +20,7 @@ function readData(id,addr,bytenum)
 end
 
 local dataServer = {
-    ip="1.234.75.137",
+    ip="127.0.0.1",
     port=2012,
     sendDelay = 5000
 }
