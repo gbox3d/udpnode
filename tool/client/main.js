@@ -60,6 +60,25 @@ Template.index.events({
     )
 
   },
+  'click [name="packet-sender"] button[name="send"]'(event, instance) {
+
+    let _ip = instance.find('[name="connection-info"] input[name="ip"]').value
+    let _pkt = event.target.parentNode.querySelector('input').value
+
+    console.log(_pkt)
+
+    Meteor.call('udp/sendRawDataTo',
+      {
+        ip : _ip,
+        pkt : _pkt
+      },
+      (_)=> {
+      console.log(_)
+
+      }
+    )
+
+  },
   'click [name="broadcast-list"] li'(event, instance) {
 
     // console.log(this._id)

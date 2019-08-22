@@ -59,9 +59,6 @@ dataConn.socket.on( "message",  Meteor.bindEnvironment(( msg, rinfo )=> {
       at : new Date()
     })
 
-
-
-
     let _cb = dataReciverCallBack[_pkt.id]
 
     if( typeof _cb === 'function' ) {
@@ -123,34 +120,6 @@ Meteor.publish("udp/bcDetect", function() {
 Meteor.publish("udp/dataReciver", function() {
   return dataReciver.find({})
 
-  // let _id = Random.id()
-  // this.added('dataReciver', _id,  {})
-  //
-  // console.log("publish udp/dataReciver add id " + _id)
-  //
-  // dataConn.socket.removeAllListeners("message")
-  //
-  // dataConn.socket.on( "message", ( msg, rinfo )=> {
-  //
-  //   console.log('receive packet')
-  //   console.log(msg.toString())
-  //
-  //   let _pkt = JSON.parse(msg)
-  //
-  //   let _cb = dataReciverCallBack[_pkt.id]
-  //
-  //   if( typeof _cb === 'function' ) {
-  //     _cb({
-  //       packet : _pkt,
-  //       collection_id : _id,
-  //       publishObj : this
-  //     })
-  //   }
-  //
-  //
-  // })
-  //
-  // this.ready()
 
 })
 
@@ -158,6 +127,14 @@ Meteor.methods({
   "udp/sendDataTo"({ip,pkt}) {
 
     dataConn.socket.send(Buffer.from(JSON.stringify(pkt)),dataConn.port,ip)
+
+    return {err:false}
+
+  },
+  "udp/sendRawDataTo"({ip,pkt}) {
+
+    console.log("send udp raw data ",pkt)
+    dataConn.socket.send(Buffer.from(pkt),dataConn.port,ip)
 
     return {err:false}
 
