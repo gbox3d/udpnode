@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8e74d58c-f358-43d0-a007-3d8280ba9944" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tool/client/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/tool/client/main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tool/client/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/tool/client/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tool/server/net/udp.js" beforeDir="false" afterPath="$PROJECT_DIR$/tool/server/net/udp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugin/ppalchisan/ext.lua" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/ppalchisan/ext.lua" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,11 +28,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
-    <option name="width" value="1920" />
-    <option name="height" value="1111" />
   </component>
   <component name="ProjectId" id="1PiqOGtL1vhGXz2A5oluwOpfVN1" />
   <component name="ProjectLevelVcsManager">
@@ -133,7 +126,8 @@
       <workItem from="1552980089745" duration="5838000" />
       <workItem from="1553066323922" duration="1823000" />
       <workItem from="1554098884519" duration="740000" />
-      <workItem from="1566367231480" duration="932000" />
+      <workItem from="1566367231480" duration="2143000" />
+      <workItem from="1566580195566" duration="1055000" />
     </task>
     <task id="LOCAL-00001" summary="....">
       <created>1551628694633</created>
@@ -195,7 +189,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
